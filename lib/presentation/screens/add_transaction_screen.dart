@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:money_wash/domain/entities/transaction_entity.dart';
 import 'package:money_wash/presentation/providers/transaction_provider.dart';
+import 'package:money_wash/core/constants/category_constants.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
@@ -19,27 +20,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _notesController = TextEditingController();
   
   TransactionType _selectedType = TransactionType.expense;
-  String _selectedCategory = 'Food';
+  String _selectedCategory = CategoryConstants.expenseCategories.first; // Default to first expense category
   DateTime _selectedDate = DateTime.now();
 
-  final List<String> _incomeCategories = [
-    'Salary',
-    'Freelance',
-    'Investment',
-    'Gift',
-    'Other',
-  ];
-
-  final List<String> _expenseCategories = [
-    'Food',
-    'Transport',
-    'Shopping',
-    'Bills',
-    'Entertainment',
-    'Health',
-    'Education',
-    'Other',
-  ];
 
   @override
   void dispose() {
@@ -129,7 +112,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               onTap: () {
                 setState(() {
                   _selectedType = TransactionType.income;
-                  _selectedCategory = _incomeCategories.first;
+                  _selectedCategory = CategoryConstants.incomeCategories.first;
                 });
               },
               child: Container(
@@ -169,7 +152,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               onTap: () {
                 setState(() {
                   _selectedType = TransactionType.expense;
-                  _selectedCategory = _expenseCategories.first;
+                  _selectedCategory = CategoryConstants.expenseCategories.first;
                 });
               },
               child: Container(
@@ -285,8 +268,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   Widget _buildCategorySelector() {
     final categories = _selectedType == TransactionType.income
-        ? _incomeCategories
-        : _expenseCategories;
+        ? CategoryConstants.incomeCategories
+        : CategoryConstants.expenseCategories;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

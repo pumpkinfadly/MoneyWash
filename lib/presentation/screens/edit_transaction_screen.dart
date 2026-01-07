@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:money_wash/domain/entities/transaction_entity.dart';
 import 'package:money_wash/presentation/providers/transaction_provider.dart';
+import 'package:money_wash/core/constants/category_constants.dart';
 
 class EditTransactionScreen extends StatefulWidget {
   final TransactionEntity transaction;
@@ -22,25 +23,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   late TransactionType _selectedType;
   late String _selectedCategory;
   late DateTime _selectedDate;
-
-  final List<String> _incomeCategories = [
-    'Salary',
-    'Freelance',
-    'Investment',
-    'Gift',
-    'Other',
-  ];
-
-  final List<String> _expenseCategories = [
-    'Food',
-    'Transport',
-    'Shopping',
-    'Bills',
-    'Entertainment',
-    'Health',
-    'Education',
-    'Other',
-  ];
 
   @override
   void initState() {
@@ -144,7 +126,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               onTap: () {
                 setState(() {
                   _selectedType = TransactionType.income;
-                  _selectedCategory = _incomeCategories.first;
+                  _selectedCategory = CategoryConstants.incomeCategories.first;
                 });
               },
               child: Container(
@@ -184,7 +166,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
               onTap: () {
                 setState(() {
                   _selectedType = TransactionType.expense;
-                  _selectedCategory = _expenseCategories.first;
+                  _selectedCategory = CategoryConstants.expenseCategories.first;
                 });
               },
               child: Container(
@@ -300,8 +282,8 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   Widget _buildCategorySelector() {
     final categories = _selectedType == TransactionType.income
-        ? _incomeCategories
-        : _expenseCategories;
+        ? CategoryConstants.incomeCategories
+        : CategoryConstants.expenseCategories;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
