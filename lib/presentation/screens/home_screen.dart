@@ -19,13 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   Future<void> _loadData() async {
     final provider = context.read<TransactionProvider>();
     await provider.loadTransactions();
-    
+
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month + 1, 0);
@@ -54,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     : () {
                         provider.syncTransactions();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Syncing transactions...')),
+                          const SnackBar(
+                            content: Text('Syncing transactions...'),
+                          ),
                         );
                       },
               );
@@ -64,11 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Consumer<TransactionProvider>(
         builder: (context, provider, child) {
-          if (provider.status == TransactionStatus.loading && provider.transactions.isEmpty) {
+          if (provider.status == TransactionStatus.loading &&
+              provider.transactions.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (provider.status == TransactionStatus.error && provider.transactions.isEmpty) {
+          if (provider.status == TransactionStatus.error &&
+              provider.transactions.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () async {
           final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddTransactionScreen()),
+            MaterialPageRoute(
+              builder: (context) => const AddTransactionScreen(),
+            ),
           );
           if (result == true) {
             final provider = context.read<TransactionProvider>();
@@ -122,8 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSummaryCard(TransactionProvider provider) {
-    final currencyFormat = NumberFormat.currency(symbol: 'Rp ', decimalDigits: 0);
-    
+    final currencyFormat = NumberFormat.currency(
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
@@ -192,7 +203,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSummaryItem(String label, String value, Color color, IconData icon) {
+  Widget _buildSummaryItem(
+    String label,
+    String value,
+    Color color,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -208,10 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 4),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
             ],
           ),
@@ -235,26 +248,16 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
-              Icons.receipt_long,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.receipt_long, size: 64, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               'No transactions yet',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
               'Tap the + button to add your first transaction',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
         ),
@@ -268,10 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Text(
             'Recent Transactions',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         ListView.builder(
@@ -288,7 +288,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTransactionItem(TransactionEntity transaction) {
-    final currencyFormat = NumberFormat.currency(symbol: 'Rp ', decimalDigits: 0);
+    final currencyFormat = NumberFormat.currency(
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
     final dateFormat = DateFormat('dd MMM yyyy');
     final isIncome = transaction.type == TransactionType.income;
     final color = isIncome ? Colors.green : Colors.red;
@@ -318,10 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           subtitle: Text(
             '${transaction.category} • ${dateFormat.format(transaction.date)}',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.grey[600], fontSize: 12),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -383,7 +383,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToEditScreen(TransactionEntity transaction) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditTransactionScreen(transaction: transaction)),
+      MaterialPageRoute(
+        builder: (context) => EditTransactionScreen(transaction: transaction),
+      ),
     );
     if (result == true) {
       final provider = context.read<TransactionProvider>();
@@ -396,7 +398,9 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Transaction'),
-        content: Text('Are you sure you want to delete "${transaction.title}"?'),
+        content: Text(
+          'Are you sure you want to delete "${transaction.title}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -405,7 +409,9 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.read<TransactionProvider>().deleteTransaction(transaction.id);
+              context.read<TransactionProvider>().deleteTransaction(
+                transaction.id,
+              );
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
