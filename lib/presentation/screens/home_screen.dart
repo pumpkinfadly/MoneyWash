@@ -6,6 +6,7 @@ import 'package:money_wash/presentation/providers/transaction_provider.dart';
 import 'package:money_wash/presentation/screens/add_transaction_screen.dart';
 
 import 'edit_transaction_screen.dart';
+import '../../presentation/widgets/spending_chart_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -96,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   _buildSummaryCard(provider),
+                  SpendingChartWidget(transactions: provider.transactions),
                   _buildTransactionsList(provider),
                 ],
               ),
